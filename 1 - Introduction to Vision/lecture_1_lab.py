@@ -3,24 +3,15 @@ Lecture 1: Lab - MNIST Digit Classification Practice
 Students implement basic neural network components step by step
 """
 
-import torch
-import torch.nn as nn
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader
-import matplotlib.pyplot as plt
-
 # TODO 1: Complete the data loading function
 def load_data():
     """Load MNIST dataset - STUDENT TASK"""
     transform = transforms.ToTensor()
     
     # TODO: Download MNIST dataset (hint: datasets.MNIST)
-    train_dataset = datasets.MNIST('data', train=True, download=True, transform=transform)
-    test_dataset = datasets.MNIST('data', train=False, transform=transform)
+
     
     # TODO: Create DataLoaders with batch_size=32
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
     
     return train_loader, test_loader
 
@@ -31,17 +22,9 @@ class MNISTNet(nn.Module):
         super().__init__()
         # TODO: Define layers
         # Hint: nn.Flatten(), nn.Linear(784, ?), nn.ReLU(), nn.Linear(?, 10)
-        self.flatten = nn.Flatten()
-        self.fc1 = nn.Linear(784, 128)  # TODO: Students fill in dimensions
-        self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(128, 10)   # TODO: Students fill in dimensions
     
     def forward(self, x):
         # TODO: Complete forward pass
-        x = self.flatten(x)
-        x = self.fc1(x)
-        x = self.relu(x)
-        x = self.fc2(x)
         return x
 
 def visualize_data(train_loader):
@@ -67,22 +50,7 @@ def train_one_epoch(model, train_loader, optimizer, criterion):
     total = 0
     
     for batch_idx, (data, target) in enumerate(train_loader):
-        # TODO: Complete training step
-        # 1. Zero gradients
-        optimizer.zero_grad()
-        
-        # 2. Forward pass
-        output = model(data)
-        
-        # 3. Calculate loss
-        loss = criterion(output, target)
-        
-        # 4. Backward pass
-        loss.backward()
-        
-        # 5. Update weights
-        optimizer.step()
-        
+        # TODO: Complete training step        
         # Track metrics
         total_loss += loss.item()
         _, predicted = output.max(1)
@@ -96,24 +64,6 @@ def train_one_epoch(model, train_loader, optimizer, criterion):
     avg_loss = total_loss / len(train_loader)
     return avg_loss, accuracy
 
-# TODO 4: Complete the test function
-def test_model(model, test_loader):
-    """Evaluate model - STUDENT TASK"""
-    model.eval()
-    correct = 0
-    total = 0
-    
-    with torch.no_grad():
-        for data, target in test_loader:
-            # TODO: Complete evaluation
-            output = model(data)
-            _, predicted = output.max(1)
-            total += target.size(0)
-            correct += predicted.eq(target).sum().item()
-    
-    accuracy = 100.0 * correct / total
-    print(f'Test Accuracy: {accuracy:.2f}%')
-    return accuracy
 
 def main():
     """Main training loop"""
@@ -159,7 +109,6 @@ def main():
 if __name__ == "__main__":
     main()
 
-# ANSWERS FOR INSTRUCTOR:
 """
 TODO 1: datasets.MNIST, DataLoader with batch_size
 TODO 2: nn.Linear(784, 128), nn.Linear(128, 10)
